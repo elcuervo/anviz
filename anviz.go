@@ -24,12 +24,21 @@ func (d *Door) Connect() {
 	d.conn, _ = net.Dial("tcp", d.Url)
 }
 
-func (d *Door) GetInformation() {
-	info := []byte{0xa5, 0x00, 0x00, 0x00, 0x01, 0x30, 0x00, 0x00}
-	l, h := checksum(info)
+func (d *Door) ForceOpen() {
+	cmd := newCommand(d.Id)
+	cmd.Build(0x5E, []byte{})
+	d.conn.Write(cmd.bytes)
 
-	info = append(info, l, h)
-	d.conn.Write(info)
+	response := make([]byte, 25)
+	d.conn.Read(response)
+
+	log.Printf("%#x\n", response)
+}
+
+func (d *Door) GetInformation() {
+	cmd := newCommand(d.Id)
+	cmd.Build(0x30, []byte{})
+	d.conn.Write(cmd.bytes)
 
 	response := make([]byte, 29)
 	d.conn.Read(response)
