@@ -1,13 +1,16 @@
 package anviz
 
-import "testing"
+import (
+	"os"
+	"testing"
+)
 
 func TestDoorInformation(t *testing.T) {
-	door := NewDoor("192.168.2.9:5010")
+	door := NewDoor(os.Getenv("DOOR_URL"))
 	door.GetInformation()
 }
 
 func TestForceOpen(t *testing.T) {
-	door := NewDoor("192.168.2.9:5010")
+	door := NewDoor(os.Getenv("DOOR_URL"))
 	door.ForceOpen()
 }
